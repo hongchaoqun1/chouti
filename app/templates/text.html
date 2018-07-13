@@ -1,0 +1,30 @@
+<html>
+<head>
+    <title>ajax</title>
+</head>
+<body>
+    <div>
+        <p>请输入要加载的地址:
+            <span id="cuurentTime"></span>
+        </p>
+        <input id="url" type="text"/>
+        <input type="button" value="刷新" onclick="Load()">
+    </div>
+    <div style="width: 125px; height:68px;">
+            <iframe id="iframePosition" style="width: 100%; height:100%;">
+                <img src="http://127.0.0.1:5000/verify/">
+            </iframe>
+    </div>
+    <script>
+        window.onload=function(){
+            var my_date = new Date();
+            document.getElementById("cuurentTime").innerText = my_date.getTime();
+        };
+        function Load() {
+            var tar = document.getElementById("url").value;
+            document.getElementById("iframePosition").src = tar;
+          }
+    </script>
+</body>
+</html>
+<!-- 没有解决模态对话框中验证码刷新的问题 -->

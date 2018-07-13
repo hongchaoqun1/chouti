@@ -1,0 +1,480 @@
+{% extends "base.html"  %}
+
+{% block title  %}首页{% endblock  %}
+
+{% block navbar %}
+<!-- 导航栏 -->
+  <nav role="navigation" class="navbar navbar-inverse dark-nav" style="margin-bottom: 0px">
+	<div class="navbar-header">
+	    <button data-target="#bs-example-navbar-collapse-3" data-toggle="collapse" class="navbar-toggle" type="button">
+			<span class="sr-only">Toggle navigation</span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		</button>
+		<a href="#" class="navbar-brand">FLASK</a>
+    </div>
+	<div id="bs-example-navbar-collapse-3" class="collapse navbar-collapse">
+		<ul class="nav navbar-nav">
+			<li class="active"><a href="{{ url_for('main.ind')  }}">Home</a></li>
+			<li><a href="#">About</a></li>
+			<li class="dropdown">
+				<a data-toggle="dropdown" class="dropdown-toggle" href="#">More <b class="caret"></b></a>
+				<ul role="menu" class="dropdown-menu">
+					<li><a href="#">42区</a></li>
+					<li><a href="#">段子</a></li>
+					<li class="divider"></li>
+					<li><a href="#">你问我答</a></li>
+					<li class="divider"></li>
+					<li><a href="#">图片</a></li>
+				</ul>
+			</li>
+		</ul>
+		
+		
+        <ul class="nav navbar-nav navbar-right">
+			{% if current_user.is_authenticated %}	
+				<li><a href="#">{{ username  }}</a></li>
+				<li><a href="#" onclick="logout();">退出</a></li>
+			 {% else  %}
+			  <li>
+				  <a href="{{ url_for('main.regist')  }}">注册</a>
+			   </li>
+			   <li data-toggle="modal" data-target="#myModal">
+				  <a href="#">登录</a>
+			  </li>
+			 {% endif  %}
+           <li>
+		      <form role="search" class="navbar-form">
+			    <div class="form-group">
+				    <input type="text" placeholder="Search" class="form-control">
+			    </div>
+			        <button class="btn btn-success" type="submit">Submit</button>
+		       </form>
+		   </li>
+		</ul>
+	<div>
+</nav>
+{% endblock %}
+
+{% block content %}
+  <div class="container" style="background-color:white; margin-top: 0px;width: 70%">
+    <!-- 发布下拉菜单 -->
+	<div style="margin-top:8px;margin-left: 10px " class="row">
+		<div class="col-md-10" style="margin-top: 10px;font-size: 1.3em">
+		<span class="label label-info"><a>信息标签</a></span>&nbsp;&nbsp;
+		<span class="label label-info"><a>信息标签</a></span>&nbsp;&nbsp;
+		<span class="label label-info"><a>信息标签</a></span>&nbsp;&nbsp;
+		</div>
+		<div class="dropdown col-md-2">
+				<button type="button" class="btn btn-primary btn-lg " id="dropdownMenu1" 
+						data-toggle="dropdown" >
+					+ 发布
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+					<li role="presentation">
+						<a role="menuitem" tabindex="-1" href="#">链接</a>
+					</li>
+					<!-- 发布文字 -->
+					{% if current_user.is_authenticated %}
+					<li role="presentation" data-toggle="modal" data-target="#myModal_fa">
+						<a role="menuitem" tabindex="-1" href="#">文字</a>
+					</li>
+					{% else %}
+					<li role="presentation" data-toggle="modal" data-target="#myModal">
+						<a role="menuitem" tabindex="-1" href="#">文字</a>
+					</li>
+					{% endif  %}
+					<!-- 发布图片 -->
+					{% if current_user.is_authenticated %}
+					<li role="presentation" data-toggle="modal" data-target="#myModal_fa_tu">
+						<a role="menuitem" tabindex="-1" href="#">图片</a>
+					</li>
+					{% else %}
+					<li role="presentation" data-toggle="modal" data-target="#myModal">
+						<a role="menuitem" tabindex="-1" href="#">图片</a>
+					</li>
+					{% endif  %}
+					
+				</ul>
+		</div>
+	</div>
+
+	<hr>
+<!-- 新闻列表循环				 -->
+    <div id="show_news">
+      {% for new in news  %}
+      <div style="margin-left: 10px" id="article" id="base">
+		<div class="row">  
+		    <h4><a>{{ new['title']  }}</a></h4>
+		</div>
+		<div>
+		   <p>{{ new['article']  }}</p>
+		</div>
+		<div>
+			<a href="#"><span class="glyphicon glyphicon-heart"></span></a>
+			<a href="#">    1</a>
+			<a href="#"><span class="glyphicon glyphicon-envelope"></span></a>
+			<a href="#">    1</a>
+			<a href="#"><span class="glyphicon glyphicon-star-empty"></span></a>
+			<a href="#">    收藏</a>
+		</div>
+		<hr>
+	  </div>
+	  <!-- 评论框 -->
+	  <div class="row">
+        <div style="margin-left:5%;background-color: blanchedalmond;margin-right:5%">
+			<p>
+				<label>最热评论</label>
+				<a href="#">去页面评论</a>
+			</p>
+			<hr style=" border:none;border-top:2px dotted #185598;" />
+			<ul></ul>
+			<hr style=" border:none;border-top:2px dotted #185598;" />
+			<p>
+				  <input type="text" class="form-control" id="name" placeholder="请输入评论">
+				  <input type="submit" class="btn btn-default" value="发表">
+			</p>
+		</div>
+	  </div>
+
+
+
+
+
+
+	  {% endfor  %}
+    </div>
+	<!-- 登录模态框（Modal） -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" 
+								aria-hidden="true">×
+						</button>
+						<h4 class="modal-title" id="myModalLabel">
+							登录
+						</h4>
+					</div>
+					<div class="modal-body">
+						
+							{{ csrf_token }}
+							<p>
+							  username:<input type="text" name="username" id="username">
+							</p>
+							<p>
+							  password:<input type="password" name="password" id="password">
+							</p>
+							<p>
+								验证码:<input type="text" name="code">
+								<img src="http://127.0.0.1:5000/verify/" id="imgCode">
+								<label>验证码不对</label>
+							</p>
+							<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+							</button>
+							<input type="submit" value="登录" id="login">
+						
+					</div>
+
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+
+		<!-- 发布文字模态框（Modal） -->
+		<div class="modal fade" id="myModal_fa" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" 
+								aria-hidden="true">×
+						</button>
+						<h4 class="modal-title" id="myModalLabel">
+							发布新闻
+						</h4>
+					</div>
+					<div class="modal-body">
+						
+							{{ csrf_token }}
+							<p>
+							  title:<input type="text" name="title" id="new_title">
+							</p>
+							<p>
+							  password:</br>
+							  <textarea name="content" cols="70" id="content"></textarea>
+							</p>
+							<p>
+                                <label>发布到:</label>
+								<div id="warp_news">
+									<label class="radio-inline">
+										<input type="radio" name="rd"  value="3" checked> 42 区
+									</label>
+									<label class="radio-inline">
+										<input type="radio" name="rd"   value="5"> 段子
+									</label>
+									<label class="radio-inline">
+										<input type="radio" name="rd"  value="6"> 图片
+									</label>
+									<label class="radio-inline">
+										<input type="radio" name="rd"  value="4"> 你问我答
+									</label>
+								</div>
+							</p>
+							<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+							</button>
+							<button type="submit" class="btn btn-default" data-dismiss="modal"  id="posts">提交
+					        </button>
+						
+					</div>
+					<div class="modal-footer">
+						
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->	
+</div>
+
+		<!-- 发布图片模态框（Modal） -->
+		<div class="modal fade" id="myModal_fa_tu" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" 
+								aria-hidden="true">×
+						</button>
+						<h4 class="modal-title" id="myModalLabel">
+							发布图片
+						</h4>
+					</div>
+					<div class="modal-body">
+						
+							{{ csrf_token }}
+							<p>
+								<label>上传图片</label>
+								<input type="file" name="file" value="点击上传" id="upload_img">
+								<input type="submit"  value="保存提交" id="submit_img">
+								<input type="hidden" id="img_url">
+							</p>
+							<p>
+							  <input type="text" name="title" id="img_title">
+							</p>
+							<p>
+
+							</p>
+							<p>
+								<div id="wrap_img">
+									<label>发布到:</label>
+									<label class="radio-inline">
+										<input type="radio" name="optionsRadiosinline"   value="5"> 段子
+									</label>
+									<label class="radio-inline">
+										<input type="radio" name="optionsRadiosinline"   value="6"> 图片
+									</label>
+								</div>
+							</p>
+							<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+							</button>
+							<button type="submit" class="btn btn-default" data-dismiss="modal"  id="posts_img">提交
+					        </button>
+						
+					</div>
+					<div class="modal-footer">
+						
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->	
+</div>
+
+
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+   $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+//    登录
+   $("#login").click(function(){
+	   var username = $("#username").val();
+	   var password = $("#password").val();
+	   var imgCode = $("#imgCode").val();
+
+	   params = {"username": username, "password": password, "imgCode":imgCode}
+
+	   $.ajax({
+		   type: "POST",
+		   dataType: "json",
+		   url: $SCRIPT_ROOT+"/api/v1/login/",
+		   data: JSON.stringify(params),
+		   contentType: "application/json",
+		   success: function(data) {
+			   	// var obj = JSON.parse(data);
+					if (data.status){
+						alert("登录成功");
+						location.href = "http://127.0.0.1:5000/"
+					}else{
+                        alert(data.error);
+		            }
+	       }
+       })
+   })  
+//    退出
+function logout() {
+            let xhr = new XMLHttpRequest()
+            xhr.onreadystatechange = function (event) {
+                let readystate = xhr.readyState
+                if (readystate == 4) {
+                    if (xhr.status == 200) {
+                        // let response = JSON.parse(xhr.responseText)
+                        let state = response.state
+                        let msg = response.msg
+                        let data = response.data
+                        if (state == 200) {
+                            console.log("/admin/index.html")
+                        } 
+                    }else{
+                        alert('服务器连接失败!')
+                    }
+                }
+            }
+            xhr.open('post', 'http://127.0.0.1:5000/api/v1/login/')
+            xhr.setRequestHeader('Content-Type', 'application/json')
+            xhr.setRequestHeader('X-method', 'delete')
+            xhr.send(JSON.stringify({}))
+        }
+// 发布新闻
+	$(function(){
+		$("#posts").click(function(){
+			
+			var title = $("#new_title").val();
+			var content = $("#content").val();
+			var radio_val = $('input:checked[name="rd"]').val();
+            alert(radio_val);
+			params = {"title":title, "content":content, "type": radio_val, "url": ''}
+
+			$.ajax({
+				type: "post",
+				dataType: "json",
+				contentType: "application/json",
+				url: $SCRIPT_ROOT+"/api/v1/post/",
+				data: JSON.stringify(params),
+				success: function(data){
+					// var obj = JSON.parse(data);
+					if (data.status){
+						alert("提交成功");
+						location.href = "http://127.0.0.1:5000/"
+					}else{
+                        alert(data.error);
+		            }
+				}
+			})
+		})
+	})	
+
+// 用ajax的方法发布图片
+//用委托事件可能有用,有时间可以试一试
+    $(function(){
+		$("#submit_img").click(function(){
+			var img = $("#upload_img")[0].files[0];
+			var form = new FormData();
+			form.append("file", img);
+
+            $.ajax({
+              type: "POST",
+              url: 'http://127.0.0.1:5000/files/upload',
+              data: form,
+              processData: false,
+              contentType: false,
+              success: function(arg){
+				if (arg.status){
+                    url = arg.data;
+					var img_url = $("#img_url");
+					img_url.val(url["url"]);
+					alert("提交成功!");
+				}else{
+					alert(data.error);
+				    }
+              }
+		   })
+	    })
+
+    $(function(){
+		$("#posts_img").click(function(){
+			var params = new Object();
+			var url = $("#img_url").val();
+			if (url){
+				params.url = url;
+			}else{
+				alert("请先上传文件")
+			}
+
+			var title = $("#img_title").val();
+			var radio_val = $('input:checked[name="optionsRadiosinline"]').val();
+			params.title = title;
+			params.type = radio_val;
+			params.content = '';
+
+            $.ajax({
+				type: "post",
+				dataType: "json",
+				contentType: "application/json",
+				url: $SCRIPT_ROOT+"/api/v1/post/",
+				data: JSON.stringify(params),
+				success: function(data){
+					// var obj = JSON.parse(data);
+					if (data.status){
+						alert("提交成功");
+						location.href = "http://127.0.0.1:5000/"
+					}else{
+                        alert(data.error);
+		            }
+				}
+			})
+
+		})
+	})
+
+    })	
+
+// 获取新闻
+	$(function(){
+		$.ajax({
+			type: "get",
+			url : $SCRIPT_ROOT+"/api/v1/post/",
+			dataType: "json",
+			success: function(data){
+					if (data.status){
+						news = data.data[0];
+						$.each(data.data, function(index, value){
+							
+						  var a = '<div style="margin-left: 10px" id="article" id="base">' +
+		'<div class="row">  '+
+		    '<h4><a>'+value["title"]+'</a></h4>'+
+		'</div>'+
+		'<div>'+
+		  ' <p>'+value["content"]+'</p>'+
+		'</div>'+
+		'<div>'+
+		'	<a href="#"><span class="glyphicon glyphicon-heart"></span></a>'+
+			'<a href="#">    1</a>'+
+			'<a href="#"><span class="glyphicon glyphicon-envelope"></span></a>'+
+			'<a href="#">    1</a>'+
+			'<a href="#"><span class="glyphicon glyphicon-star-empty"></span></a>'+
+			'<a href="#">    收藏</a>'
+		+'</div>'
+		+'<hr>'
+      +'</div>'
+
+	  console.log();
+	  $("#show_news").append(a);
+
+						})
+					}else{
+                        alert(data.error);
+		            }
+			}
+		})
+	})
+</Script>
+{% endblock %}

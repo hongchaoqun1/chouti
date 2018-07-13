@@ -1,0 +1,46 @@
+{% extends "bootstrap/base.html"  %}
+
+{% block title  %}登录{% endblock %}
+
+{% block content %}
+       {{ csrf_token }}
+     <p>username:<input type="text" name="username" id="username"></p>
+     <p>password:<input type="password" name="password" id="password"></p>
+     <p>记住密码<input type="checkbox" name="checkbox" id="checkbox" checked=True></p>
+     <button type="submit" id="sub">login</button>
+
+   {% for message in get_flashed_messages() %}
+    <div class="alert alert-danger" id="message">
+            {{ message }}
+    </div>   
+   {% endfor %}
+   
+{% endblock %}
+
+{% block scripts %}
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script type=text/javascript>
+
+   $(function(){
+       $("#sub").click(function(){
+           var username = $("#username").val()
+           var password = $("#password").val()
+
+           if($("#checkbox").checked == true){
+               checkbox = 1;
+               console.log(1);
+           }else{
+               checkbox = 1;
+               console.log(0);
+           }
+           $.ajax({
+               type: "POST",
+               url: "{{ url_for('main.login') }}",
+               dataType: "json",
+               data: JSON.stringify({"username":username, "password":password, "checkbox":checkbox}),
+               contentType: "application/json"
+           })
+       })
+   })
+</script>   
+{% endblock %}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+{% block head %}
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    {% block meta %}{% endblock %}
+    <style>
+        {% block style %}
+        	*{color:red;}
+            .hide{
+                display:None;
+            }
+        {% endblock %}
+    </style>
+    {% block link %}
+    {% endblock %}
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"></script>
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+{% endblock %}
+<body style="background-color: gainsboro">
+        {% block navbar %}
+        {% endblock %}
+{% block content %}
+
+{% endblock %}
+<div class="text-center" style="margin-bottom: 0px">
+    <hr>
+    www.htt.com
+</div>
+{% block scripts %}
+{% endblock %}
+</body>
+</html>

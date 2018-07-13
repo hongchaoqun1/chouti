@@ -1,0 +1,36 @@
+{% extends "bootstrap/base.html"  %}
+
+{% block title  %}显示数据{% endblock %}
+
+{% block content %}
+<div class="container">
+       <h1>Flask</h1>
+       <div class="row">  
+            {% for message in message_lists %}
+            <ul>
+                <li>{{ message['username']|striptags }}</li>
+            </ul>
+            {% endfor %}
+        </div>    
+    
+    <div class="row">
+        <!-- <ul class="pagination">
+                <li><a href="#">&laquo;</a></li>
+                <li class="active"><a href="/value/1">1</a></li>
+                <li ><a href="/value/2">2</a></li>
+                <li><a href="/value/3">3</a></li>
+                <li><a href="/value/4">4</a></li>
+                <li><a href="/value/5">5</a></li>
+                <li><a href="#">&raquo;</a></li>
+        </ul> -->
+        <ul class="pagination">
+        {% for tag in tags %}
+        
+           {{ tag|safe }}
+        
+        {% endfor %}
+        </ul>
+    </div>
+</div>    
+   
+{% endblock %}

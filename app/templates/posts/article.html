@@ -1,0 +1,249 @@
+{% extends "base.html"  %}
+
+{% block title  %}文章{% endblock  %}
+
+{% block navbar %}
+<!-- 导航栏 -->
+  <nav role="navigation" class="navbar navbar-inverse dark-nav" style="margin-bottom: 0px">
+	<div class="navbar-header">
+	    <button data-target="#bs-example-navbar-collapse-3" data-toggle="collapse" class="navbar-toggle" type="button">
+			<span class="sr-only">Toggle navigation</span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		</button>
+		<a href="#" class="navbar-brand">FLASK</a>
+    </div>
+	<div id="bs-example-navbar-collapse-3" class="collapse navbar-collapse">
+		<ul class="nav navbar-nav">
+			<li class="active"><a href="{{ url_for('main.ind')  }}">Home</a></li>
+			<li><a href="#">About</a></li>
+			<li class="dropdown">
+				<a data-toggle="dropdown" class="dropdown-toggle" href="#">More <b class="caret"></b></a>
+				<ul role="menu" class="dropdown-menu">
+					<li><a href="#">42区</a></li>
+					<li><a href="#">段子</a></li>
+					<li class="divider"></li>
+					<li><a href="#">你问我答</a></li>
+					<li class="divider"></li>
+					<li><a href="#">图片</a></li>
+				</ul>
+			</li>
+		</ul>
+		
+		
+        <ul class="nav navbar-nav navbar-right">
+			{% if current_user.is_authenticated %}	
+				<li><a href="#">{{ username  }}</a></li>
+				<li><a href="#" onclick="logout();">退出</a></li>
+			 {% else  %}
+			  <li>
+				  <a href="{{ url_for('main.regist')  }}">注册</a>
+			   </li>
+			   <li data-toggle="modal" data-target="#myModal">
+				  <a href="#">登录</a>
+			  </li>
+			 {% endif  %}
+           <li>
+		      <form role="search" class="navbar-form">
+			    <div class="form-group">
+				    <input type="text" placeholder="Search" class="form-control">
+			    </div>
+			        <button class="btn btn-success" type="submit">Submit</button>
+		       </form>
+		   </li>
+		</ul>
+	<div>
+</nav>
+{% endblock %}
+
+{% block content %}
+  <div class="container" style="background-color:white; margin-top: 0px;width: 70%">
+    <!-- 发布下拉菜单 -->
+	<div style="margin-top:8px;margin-left: 10px " class="row">
+		<div class="col-md-10" style="margin-top: 10px;font-size: 1.3em">
+		<span class="label label-info"><a>信息标签</a></span>&nbsp;&nbsp;
+		<span class="label label-info"><a>信息标签</a></span>&nbsp;&nbsp;
+		<span class="label label-info"><a>信息标签</a></span>&nbsp;&nbsp;
+		</div>
+		<div class="dropdown col-md-2">
+				<button type="button" class="btn btn-primary btn-lg " id="dropdownMenu1" 
+						data-toggle="dropdown" >
+					+ 发布
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+					<li role="presentation">
+						<a role="menuitem" tabindex="-1" href="#">链接</a>
+					</li>
+					<!-- 发布文字 -->
+					{% if current_user.is_authenticated %}
+					<li role="presentation" data-toggle="modal" data-target="#myModal_fa">
+						<a role="menuitem" tabindex="-1" href="#">文字</a>
+					</li>
+					{% else %}
+					<li role="presentation" data-toggle="modal" data-target="#myModal">
+						<a role="menuitem" tabindex="-1" href="#">文字</a>
+					</li>
+					{% endif  %}
+					<!-- 发布图片 -->
+					{% if current_user.is_authenticated %}
+					<li role="presentation" data-toggle="modal" data-target="#myModal_fa_tu">
+						<a role="menuitem" tabindex="-1" href="#">图片</a>
+					</li>
+					{% else %}
+					<li role="presentation" data-toggle="modal" data-target="#myModal">
+						<a role="menuitem" tabindex="-1" href="#">图片</a>
+					</li>
+					{% endif  %}
+					
+				</ul>
+		</div>
+	</div>
+
+	<hr>
+<!-- 新闻列表循环				 -->
+    <div id="show_news">
+      
+      <div style="margin-left: 10px" id="article" id="base">
+		<div class="row">  
+		    <h4><a href="#" id="title"></a></h4>
+		</div>
+		<div>
+		   <p id="content"></p>
+		</div>
+		<div>
+			<a href="#"><span class="glyphicon glyphicon-heart"></span></a>
+			<a href="#">    1</a>
+			<a href="#"><span class="glyphicon glyphicon-envelope"></span></a>
+			<a href="#">    1</a>
+			<a href="#"><span class="glyphicon glyphicon-star-empty"></span></a>
+			<a href="#">    收藏</a>
+		</div>
+		<hr>
+	  </div>
+	  <!-- 评论框 -->
+	  <div class="row">
+        <div style="margin-left:5%;background-color: blanchedalmond;margin-right:5%">
+			<p>
+				<label>最热评论</label>
+			</p>
+			<hr style=" border:none;border-top:2px dotted #185598;" />
+			<ul></ul>
+			<hr style=" border:none;border-top:2px dotted #185598;" />
+			<p>
+				  <input type="text" class="form-control" id="comment" placeholder="请输入评论">
+				  <input type="submit" class="btn btn-default" value="发表" id="sub">
+			</p>
+		</div>
+	  </div>
+    </div>
+	<!-- 登录模态框（Modal） -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" 
+								aria-hidden="true">×
+						</button>
+						<h4 class="modal-title" id="myModalLabel">
+							登录
+						</h4>
+					</div>
+					<div class="modal-body">
+						
+							{{ csrf_token }}
+							<p>
+							  username:<input type="text" name="username" id="username">
+							</p>
+							<p>
+							  password:<input type="password" name="password" id="password">
+							</p>
+							<p>
+								验证码:<input type="text" name="code">
+								<img src="http://127.0.0.1:5000/verify/" id="imgCode">
+								<label>验证码不对</label>
+							</p>
+							<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+							</button>
+							<input type="submit" value="登录" id="login">
+						
+					</div>
+
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+       <input type="hidden" value="{{ current_user.id }}" id="uuid">
+{% endblock %}
+
+{% block scripts %}
+<script>
+/**
+ * 取得url参数
+ */
+function getUrlParam(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); // 构造一个含有目标参数的正则表达式对象
+    var r = window.location.search.substr(1).match(reg);  // 匹配目标参数
+    if (r != null) return unescape(r[2]); return null; // 返回参数值
+}
+
+$(function(){
+    var name = getUrlParam('article');
+    $.ajax({
+        type: "get",
+        url: "http://127.0.0.1:5000/api/v1/post/?article="+name,
+        dataType: "json",
+        success: function(data){
+            a = data.status;
+            if (a==true){
+               post = data.data;
+               var title = post["title"];
+               var content = post["content"];
+               $("#title").text(title);
+               $("#content").text(content);
+            }else{
+                alert("对不起,未找到文章")
+            }
+            
+        }
+    })
+})
+
+$("#sub").click(function(){
+	var pid = getUrlParam('article')
+	var comment = $("#comment").val();
+	var uid = $("#uuid").val();
+	params = {"comment": comment, "pid": pid, "uid": uid,"up": 0, "down":0, "device":"iphone", "reply_id":null};
+    console.log(comment,uid);
+	$.ajax({
+		type: "post",
+		url: "http://127.0.0.1:5000/api/v1/comment/",
+		dataType: "json",
+		data: JSON.stringify(params),
+		contentType: "application/json",
+		success: function(data){
+			console.log("提交成功")
+		}
+	})
+})
+
+$(function(){
+	$.ajax({
+		type: "get",
+		url: "http://127.0.0.1:5000/api/v1/comment/?pid=3",
+		dataType: "json",
+		success: function(data){
+			a = data.status;
+            if (a==true){
+               comment = data.data;
+               console.log(comment);
+            }else{
+                alert("对不起,未找到文章");
+            }
+		}
+	})
+})
+
+
+</script>
+{% endblock  %}

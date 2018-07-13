@@ -1,0 +1,147 @@
+{% extends "bootstrap/base.html"  %}
+
+{% block title  %}注册{% endblock  %}
+
+
+
+{% block navbar %}
+<!-- 导航栏 -->
+  <nav role="navigation" class="navbar navbar-inverse dark-nav">
+	<div class="navbar-header">
+	    <button data-target="#bs-example-navbar-collapse-3" data-toggle="collapse" class="navbar-toggle" type="button">
+			<span class="sr-only">Toggle navigation</span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		</button>
+		<a href="#" class="navbar-brand">FLASK</a>
+    </div>
+	<div id="bs-example-navbar-collapse-3" class="collapse navbar-collapse">
+		<ul class="nav navbar-nav">
+			<li class="active"><a href="{{ url_for('main.ind')  }}">Home</a></li>
+			<li><a href="#">About</a></li>
+			<li class="dropdown">
+				<a data-toggle="dropdown" class="dropdown-toggle" href="#">More <b class="caret"></b></a>
+				<ul role="menu" class="dropdown-menu">
+					<li><a href="#">Action</a></li>
+					<li><a href="#">Another action</a></li>
+				    <li><a href="#">Something else here</a></li>
+					<li class="divider"></li>
+					<li><a href="#">Separated link</a></li>
+					<li class="divider"></li>
+					<li><a href="#">One more separated link</a></li>
+				</ul>
+			</li>
+		</ul>
+		
+		
+        <ul class="nav navbar-nav navbar-right">
+		   {% if current_user.is_authenticated %}	
+		      <li><a href="#">{{ username  }}</a></li>
+		      <li><a href="#">退出</a></li>
+		   {% else  %}
+		    <li>
+				<a href="#">注册</a>
+			 </li>
+			 <li data-toggle="modal" data-target="#myModal_regist">
+				<a href="#">登录</a>
+			</li>
+		   {% endif  %}
+           <li>
+		      <form role="search" class="navbar-form">
+			    <div class="form-group">
+				    <input type="text" placeholder="Search" class="form-control">
+			    </div>
+			        <button class="btn btn-success" type="submit">Submit</button>
+		       </form>
+		   </li>
+		</ul>
+	<div>
+</nav>
+{% endblock %}
+
+{% block content %}
+  <div class="container">
+  	<div class="page-header">
+  		<h1>flask</h1>
+    </div>
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">Stacked Form</div>
+            <div class="panel-body">
+           
+              <div class="form-group">
+                        <label>用户名</label>
+                        <input type="text" placeholder="text" class="form-control" id="username">
+              </div>
+              <div class="form-group">
+                 <label>手机号</label>
+                 <input type="text" placeholder="Enter email" class="form-control" id="phone">
+              </div>
+              <div class="form-group">
+                 <label>密码</label>
+                 <input type="password" placeholder="Password" class="form-control" id="password">
+              </div>
+              <div class="form-group">
+                    <label>确认密码</label>
+                    <input type="password" placeholder="Password" class="form-control" id="password2">
+              </div>
+              <div class="form-group">
+                    <label>手机验证码</label>
+                       <input type="text" placeholder="text" class="form-control col-md-3"  id="code">     
+                </div>
+              <button type="submit" class="btn btn-sm btn-default">点击获取获取</button>
+              <button type="submit" class="btn btn-sm btn-default" id="submit">注册</button>
+           
+            </div>
+             
+           </div>
+    </div>
+ 
+      
+  </div>	
+
+
+{% endblock %}
+
+{% block scripts %}
+    
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js">
+    </script>
+   <script>
+	 $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+     $(function(){
+		$("#submit").click(function(){
+			var username = $("#username").val();
+			var password = $("#password").val();
+			var password2 = $("#password2").val();
+			var phone = $("#phone").val();
+
+			params = {
+				"username": username,
+				"password": password,
+				"password2": password2,
+				"phone": phone
+			};
+			$.ajax({
+				type: "POST",
+				// url: "http://127.0.0.1:5000/api/v1/regist/",
+				url: $SCRIPT_ROOT+"/api/v1/regist/",
+				dataType: "json",
+                data: JSON.stringify(params),
+				contentType: "application/json",
+				success: function(data){
+					// var obj = JSON.parse(data);
+					if (data.status){
+						alert("注册成功");
+						location.href = "http://127.0.0.1:5000/"
+					}else{
+                        alert(data.error);
+					}
+					
+				}
+			})
+		})
+     })
+   </script>
+{% endblock %}
